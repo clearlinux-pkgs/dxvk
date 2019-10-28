@@ -1,7 +1,4 @@
-pushd build.w64
-ninja install
-popd
-
-pushd build.w32
-ninja install
-popd
+mkdir -p %{buildroot}/usr/lib64/wine
+find build.w64/src -name '*.dll.so' -exec install {} %{buildroot}/usr/lib64/wine/ \;
+mkdir -p %{buildroot}/usr/lib32/wine
+find build.w32/src -name '*.dll.so' -exec install {} %{buildroot}/usr/lib32/wine/ \;

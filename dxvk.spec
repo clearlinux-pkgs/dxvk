@@ -4,12 +4,13 @@
 #
 Name     : dxvk
 Version  : 1.4.4
-Release  : 2
+Release  : 3
 URL      : https://github.com/doitsujin/dxvk/archive/v1.4.4.tar.gz
 Source0  : https://github.com/doitsujin/dxvk/archive/v1.4.4.tar.gz
 Summary  : No detailed summary available
 Group    : Development/Tools
 License  : BSD-3-Clause Zlib
+Requires: dxvk-lib = %{version}-%{release}
 Requires: dxvk-license = %{version}-%{release}
 BuildRequires : Vulkan-Loader-dev
 BuildRequires : Vulkan-Loader-dev32
@@ -32,6 +33,24 @@ BuildRequires : wine-extras-staticdev
 %description
 # DXVK
 A Vulkan-based translation layer for Direct3D 10/11 which allows running 3D applications on Linux using Wine.
+
+%package lib
+Summary: lib components for the dxvk package.
+Group: Libraries
+Requires: dxvk-license = %{version}-%{release}
+
+%description lib
+lib components for the dxvk package.
+
+
+%package lib32
+Summary: lib32 components for the dxvk package.
+Group: Default
+Requires: dxvk-license = %{version}-%{release}
+
+%description lib32
+lib32 components for the dxvk package.
+
 
 %package license
 Summary: license components for the dxvk package.
@@ -59,7 +78,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1572292739
+export SOURCE_DATE_EPOCH=1572293251
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -72,23 +91,37 @@ make  %{?_smp_mflags}  ||:
 
 
 %install
-export SOURCE_DATE_EPOCH=1572292739
+export SOURCE_DATE_EPOCH=1572293251
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/dxvk
 cp %{_builddir}/dxvk-1.4.4/LICENSE %{buildroot}/usr/share/package-licenses/dxvk/4a83b2fbabc7965ffeffdda9b49248867c18e621
 cp %{_builddir}/dxvk-1.4.4/include/openvr/LICENSE %{buildroot}/usr/share/package-licenses/dxvk/99e40ce3676d57f631fca8692017203185ab6b5f
 %make_install ||:
 ## install_append content
-pushd build.w64
-ninja install
-popd
-pushd build.w32
-ninja install
-popd
+mkdir -p %{buildroot}/usr/lib64/wine
+find build.w64/src -name '*.dll.so' -exec install {} %{buildroot}/usr/lib64/wine/ \;
+mkdir -p %{buildroot}/usr/lib32/wine
+find build.w32/src -name '*.dll.so' -exec install {} %{buildroot}/usr/lib32/wine/ \;
 ## install_append end
 
 %files
 %defattr(-,root,root,-)
+
+%files lib
+%defattr(-,root,root,-)
+/usr/lib64/wine/d3d10.dll.so
+/usr/lib64/wine/d3d10_1.dll.so
+/usr/lib64/wine/d3d10core.dll.so
+/usr/lib64/wine/d3d11.dll.so
+/usr/lib64/wine/dxgi.dll.so
+
+%files lib32
+%defattr(-,root,root,-)
+/usr/lib32/wine/d3d10.dll.so
+/usr/lib32/wine/d3d10_1.dll.so
+/usr/lib32/wine/d3d10core.dll.so
+/usr/lib32/wine/d3d11.dll.so
+/usr/lib32/wine/dxgi.dll.so
 
 %files license
 %defattr(0644,root,root,0755)
