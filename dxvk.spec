@@ -4,7 +4,7 @@
 #
 Name     : dxvk
 Version  : 1.4.4
-Release  : 1
+Release  : 2
 URL      : https://github.com/doitsujin/dxvk/archive/v1.4.4.tar.gz
 Source0  : https://github.com/doitsujin/dxvk/archive/v1.4.4.tar.gz
 Summary  : No detailed summary available
@@ -48,18 +48,18 @@ license components for the dxvk package.
 ## build_prepend content
 meson --cross-file build-wine64.txt --buildtype release --prefix `pwd -P`/64 build.w64
 pushd build.w64
-ninja install
+ninja
 popd
 meson --cross-file build-wine32.txt --buildtype release --prefix `pwd -P`/32 build.w32
 pushd build.w32
-ninja install
+ninja
 popd
 ## build_prepend end
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1572292515
+export SOURCE_DATE_EPOCH=1572292739
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -72,12 +72,20 @@ make  %{?_smp_mflags}  ||:
 
 
 %install
-export SOURCE_DATE_EPOCH=1572292515
+export SOURCE_DATE_EPOCH=1572292739
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/dxvk
 cp %{_builddir}/dxvk-1.4.4/LICENSE %{buildroot}/usr/share/package-licenses/dxvk/4a83b2fbabc7965ffeffdda9b49248867c18e621
 cp %{_builddir}/dxvk-1.4.4/include/openvr/LICENSE %{buildroot}/usr/share/package-licenses/dxvk/99e40ce3676d57f631fca8692017203185ab6b5f
 %make_install ||:
+## install_append content
+pushd build.w64
+ninja install
+popd
+pushd build.w32
+ninja install
+popd
+## install_append end
 
 %files
 %defattr(-,root,root,-)

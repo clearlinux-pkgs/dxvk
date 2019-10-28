@@ -1,0 +1,7 @@
+pushd build.w64
+ninja install
+popd
+
+pushd build.w32
+ninja install
+popd
