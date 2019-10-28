@@ -1,0 +1,9 @@
+meson --cross-file build-wine64.txt --buildtype release --prefix `pwd -P`/64 build.w64
+pushd build.w64
+ninja install
+popd
+
+meson --cross-file build-wine32.txt --buildtype release --prefix `pwd -P`/32 build.w32
+pushd build.w32
+ninja install
+popd
