@@ -13,3 +13,8 @@ gcc-libgcc32
 gcc-libstdc++32
 glibc-dev32
 glibc-libc32
+mingw-binutils
+mingw-crt
+mingw-gcc
+mingw-crt-dev
+
